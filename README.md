@@ -1,4 +1,4 @@
-<img width="648" height="1404" alt="image" src="https://github.com/user-attachments/assets/9046f2be-7132-4c98-a59d-a2842b0be06d" /># 프로젝트 발표 홈페이지 · 16주차 편집 버전
+# 프로젝트 발표 홈페이지 · 16주차 편집 버전
 
 ## 1주차 프로젝트 소개 업데이트
 
