@@ -1,0 +1,25 @@
+/* 1주차 프로젝트 소개: 외부 폰트 다운로드 없이 한국어 시스템 글꼴 사용 */
+body {font-family: "맑은 고딕", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;}
+.project-sidebar {grid-row:1;}
+.intro h1 {font-size:25px;line-height:1.55;letter-spacing:-.7px;}
+.project-edit {margin-top:20px;}
+.report {padding-left:clamp(24px,4vw,80px);padding-right:clamp(24px,4vw,80px);}
+.introduction-document {font-size:18px;line-height:1.95;color:#34435a;letter-spacing:-.25px;padding-bottom:38px;}
+.introduction-document > h3 {font-size:25px;line-height:1.5;letter-spacing:-.7px;color:#17243b;margin:46px 0 22px;padding:0 0 14px;border-bottom:2px solid #dce6fb;break-after:avoid;}
+.introduction-document > h3:first-child {margin-top:32px;}
+.introduction-document h4 {font-size:19px;font-weight:750;color:#2459e0;line-height:1.6;margin:28px 0 12px;break-after:avoid;}
+.introduction-document p {margin:0 0 20px;white-space:pre-line;}
+.introduction-document strong {color:#17243b;font-weight:750;}
+.introduction-document ul {padding-left:24px;margin:14px 0 25px;}
+.introduction-document li {padding-left:4px;margin:9px 0;}
+.document-table-wrap {overflow-x:auto;margin:22px 0 28px;border:1px solid #dce3ed;border-radius:10px;}
+.document-table {width:100%;border-collapse:collapse;text-align:left;font-size:16px;line-height:1.8;}
+.document-table th {background:#edf2fc;color:#253957;font-weight:700;padding:14px 18px;white-space:nowrap;}
+.document-table td {padding:13px 18px;border-top:1px solid #e2e7ef;min-width:85px;}
+.document-table td:first-child {font-weight:650;color:#263b59;}
+.document-table tr:nth-child(even) td {background:#f8fafc;}
+.system-diagram {overflow:auto;background:#f1f5fb;color:#203953;border-left:4px solid #2459e0;border-radius:8px;padding:26px 30px;font:15px/1.9 Consolas,"D2Coding","Malgun Gothic",monospace;letter-spacing:0;word-break:normal;white-space:pre;}
+.system-diagram code {font:inherit;}
+.introduction-document + .materials {margin-top:20px;}
+@media(max-width:760px){.intro h1{font-size:25px;max-width:580px;}.introduction-document{font-size:16px;line-height:1.9;}.introduction-document>h3{font-size:22px;margin-top:35px;}.introduction-document h4{font-size:18px;}.document-table{font-size:14px;min-width:520px;}.document-table th,.document-table td{padding:12px;}.system-diagram{font-size:13px;padding:20px;}.report{padding:26px 20px;}}
+@media print{.introduction-document{font-size:11pt;line-height:1.8;}.introduction-document>h3{font-size:16pt;margin-top:25px;}.introduction-document h4{font-size:12pt;}.document-table{font-size:10pt;min-width:0;}.document-table-wrap{overflow:visible;border-radius:0;}.document-table tr{break-inside:avoid;}.system-diagram{font-size:10pt;break-inside:avoid;overflow:visible;}.report{padding:0;}}

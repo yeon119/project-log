@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="프로젝트 소개와 주차별 개발 과정을 기록하는 발표 아카이브">
+  <title>프로젝트 기록</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="document.css">
+  <script src="data.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문 바로가기</a>
+  <header class="header">
+    <a class="brand" href="#"><span class="brand-icon" aria-hidden="true">P<span>.</span></span>PROJECT LOG</a>
+    <nav aria-label="주 메뉴"><a href="#weekly">주차별 기록</a></nav>
+    <div class="header-actions"><button id="backup" type="button">백업 다운로드</button><button id="restore" type="button">백업 불러오기</button><input id="backup-file" type="file" accept=".json,application/json" hidden></div>
+  </header>
+  <main id="main">
+    <section class="intro" aria-labelledby="project-title">
+      <div><p class="eyebrow"><span class="dot"></span> BUILD. LEARN. RECORD.</p>
+        <h1 id="project-title"></h1><p class="intro-description" id="project-description"></p>
+      </div>
+    </section>
+    <section class="workspace" id="weekly" aria-labelledby="weekly-title">
+      <aside class="archive">
+        <div class="archive-heading"><h2 id="weekly-title">주차별 기록</h2><span id="week-count"></span></div>
+        <p class="muted archive-description">한 주씩 쌓이는 개발 과정</p>
+        <div id="week-list" class="week-list" role="group" aria-label="발표 주차 선택"></div>
+        <p class="archive-note">작은 시도도, 해결하지 못한 문제도<br>프로젝트의 기록이 됩니다.</p>
+      </aside>
+      <article class="report" aria-labelledby="report-title">
+        <div class="report-top"><span id="report-week" class="eyebrow"></span><span class="report-state" id="report-state"></span></div>
+        <h2 id="report-title"></h2><p id="report-summary" class="report-summary"></p>
+        <div class="report-toolbar"><span id="report-date"></span><button type="button" class="edit-primary" id="edit-week">이번 주차 편집</button><button type="button" class="print-button" id="print-button">발표 자료 인쇄 <span aria-hidden="true">↗</span></button></div>
+        <div id="report-sections"></div>
+        <div class="materials"><h3>첨부 자료</h3><div id="materials"></div></div>
+        <div class="report-pagination"><button type="button" id="previous-week">← 이전 주차</button><span id="page-position"></span><button type="button" id="next-week">다음 주차 →</button></div>
+      </article>
+    </section>
+  </main>
+  <footer><a class="footer-brand" href="#">PROJECT LOG<span>.</span></a><p>배우고, 만들고, 기록하는 공간.</p><a href="#">맨 위로 ↑</a></footer>
+  <noscript>주차별 자료를 표시하려면 브라우저에서 JavaScript를 활성화해 주세요.</noscript>
+  <dialog id="editor" aria-labelledby="editor-title">
+    <form id="editor-form"><div class="editor-heading"><h2 id="editor-title">내용 편집</h2><button type="button" id="close-editor" aria-label="편집 취소">닫기 ×</button></div>
+      <p class="storage-note">저장한 내용은 이 브라우저에 보관됩니다. 다른 기기에서는 백업 파일을 불러와 주세요. 배포된 사이트 전체에는 자동 반영되지 않습니다.</p>
+      <div id="editor-fields"></div><p id="editor-error" role="alert"></p>
+      <div class="editor-footer"><button type="button" id="cancel-editor">취소</button><button class="edit-primary" type="submit">저장하기</button></div>
+    </form>
+  </dialog>
+  <p id="notice" role="status" class="notice" hidden></p>
+</body>
+</html>
