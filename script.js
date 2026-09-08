@@ -17,6 +17,9 @@ function upgradeData(data) {
       .replace(/^## 5\. 시스템 구성\s*$/m, "## 4. 시스템 구성\n")
       .replace(/^## 6\. 기대 효과\s*$/m, "## 5. 기대 효과\n");
   }
+  if (data.weeks[0].title.trim() === "프로젝트 소개") {
+    data.weeks[0].title = introductionDefaults.weeks[0].title;
+  }
   return data;
 }
 function validData(data) {
