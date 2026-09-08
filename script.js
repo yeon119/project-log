@@ -8,6 +8,15 @@ function upgradeData(data) {
     data.description = introductionDefaults.description;
     data.weeks[0] = {...introductionDefaults.weeks[0], date:data.weeks[0].date, materials:data.weeks[0].materials};
   }
+  // 기존 브라우저 기록과 백업에도 요청한 목차 변경만 적용합니다.
+  const document = data.weeks[0].document;
+  if (/^## 3\. 예상 개발 시간\s*$/m.test(document)) {
+    data.weeks[0].document = document
+      .replace(/^## 3\. 예상 개발 시간[^\n]*\n[\s\S]*?(?=^## |$(?![\s\S]))/m, "")
+      .replace(/^## 4\. 구현할 기능 목록\s*$/m, "## 3. 구현할 기능 목록\n")
+      .replace(/^## 5\. 시스템 구성\s*$/m, "## 4. 시스템 구성\n")
+      .replace(/^## 6\. 기대 효과\s*$/m, "## 5. 기대 효과\n");
+  }
   return data;
 }
 function validData(data) {
