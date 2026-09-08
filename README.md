@@ -1,4 +1,4 @@
-# 프로젝트 발표 홈페이지 · 16주차 편집 버전
+<img width="648" height="1404" alt="image" src="https://github.com/user-attachments/assets/9046f2be-7132-4c98-a59d-a2842b0be06d" /># 프로젝트 발표 홈페이지 · 16주차 편집 버전
 
 ## 1주차 프로젝트 소개 업데이트
 
@@ -36,3 +36,6 @@ ZIP을 다운로드하여 다른 폴더에 압축 해제한 사본은 자동으�
 - 상단: 백업 다운로드 / 불러오기
 
 index.html은 구조, style.css는 디자인, script.js는 편집·저장 동작, data.js는 처음 실행할 때의 기본 내용을 담습니다. 일반적인 내용 수정은 웹페이지에서 하면 됩니다.
+
+
+https://app.notion.com/p/S-W-3d5f152657c98020b2b9d77a2df4d8aa?source=copy_link
