@@ -49,7 +49,7 @@ projectData.title = "WireGuard 기반 VPN 접근제어 및 이상행위 탐지 �
 projectData.description = "외부에서 내부 서버에 안전하게 접속하고, 사용자·기기별 접근권한과 이상행위를 관리하는 보안 플랫폼";
 Object.assign(projectData.weeks[0], {
   title: projectData.title, status: "작성 완료", summary: projectData.description,
-  document: `## 프로젝트 선정 이유
+  document: `## 1. 프로젝트 선정 이유
 
 정보보안 이론을 학습하는 것과 실제 소프트웨어를 개발하는 경험을 함께 쌓고자 이 프로젝트를 선정하였다. VPN과 접근제어의 개념을 공부하고, 이를 직접 동작하는 시스템으로 구현하면서 각 기술의 원리와 적용 방법을 이해하고자 한다.
 
