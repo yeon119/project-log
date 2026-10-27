@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>프로젝트 중간보고</title><link rel="stylesheet" href="style.css"></head><body>
+<main id="deck">
+<section class="slide cover" data-title="프로젝트 중간보고"><h1>프로젝트 중간보고</h1><aside>VPN 접근제어와 로그 관리 시스템의 현재 결과와 최종 목표를 소개합니다.</aside></section>
+<section class="slide" data-title="차례"><header><span class="eyebrow">CONTENTS</span><h2>차례</h2></header><ol class="agenda">
+<li><button data-go="2"><span>01</span>프로젝트 배경<i>↗</i></button></li>
+<li><button data-go="3"><span>02</span>최종 구현 목표<i>↗</i></button></li>
+<li><button data-go="4"><span>03</span>시스템 구성과 동작 흐름<i>↗</i></button></li>
+<li><button data-go="5"><span>04</span>현재까지 구현한 부분<i>↗</i></button></li>
+<li><button data-go="9"><span>05</span>남은 개발 영역과 최종 테스트 방법<i>↗</i></button></li>
+</ol><aside>목표와 구조를 먼저 소개한 뒤 기능별 구현 결과와 다음 검증 계획을 설명합니다.</aside></section>
+<section class="slide" data-title="프로젝트 배경"><header><span class="eyebrow">01 / BACKGROUND</span><h2>프로젝트 배경</h2></header>
+<p class="lead">VPN으로 내부 서비스에 접속하고,<br><strong>접근 권한과 차단 기록을 관리하는 시스템</strong></p>
+<div class="three background"><article><span class="step">01</span><h3>통신 보호</h3><p>PC와 Gateway 사이에<br>WireGuard 암호화 터널 구성</p></article><article><span class="step">02</span><h3>접근제어</h3><p>VPN 연결 이후에도<br>허용된 내부 서비스만 이용</p></article><article><span class="step">03</span><h3>기록 관리</h3><p>차단 결과를 수집·저장하고<br>조회와 백업으로 운영</p></article></div>
+<p class="takeaway">현재는 개별 기능을 구축·검증하고, 통합 관리 방향을 구체화하고 있습니다.</p><aside>WireGuard가 통신을 보호하고 nftables가 접근을 제어하며 Python과 DB가 결과를 관리합니다. 자동 설치 프로그램은 아직 구현 전입니다.</aside></section>
+<section class="slide" data-title="최종 구현 목표"><header><span class="eyebrow">02 / OBJECTIVE</span><h2>최종 구현 목표</h2></header>
+<p class="goal-lead">사용자·기기의 접속 정보와 허용 서비스를 등록하고,<br><strong>VPN 접근과 운영 결과를 한곳에서 관리하는 통합 프로그램</strong></p>
+<div class="goal-features">
+<article><span>01 / IDENTIFY</span><h3>사용자·기기 등록</h3><p>등록 정보에 공개 키와 VPN 주소를 연결하고<br>주소 변경·재할당 이력을 보관</p></article>
+<article><span>02 / CONTROL</span><h3>연결·접근 권한</h3><p>VPN 연결 상태를 확인하고 사용자·기기별<br>내부 서버·포트 접근 권한을 적용</p></article>
+<article><span>03 / OBSERVE</span><h3>기록·통계 조회</h3><p>차단 로그를 저장·검색하고 출발지·프로토콜·<br>목적지 포트별 현황을 확인</p></article>
+<article><span>04 / OPERATE</span><h3>운영·백업 관리</h3><p>정책 변경과 관리자 작업을 기록하고<br>자동 저장·백업 결과와 복원 상태를 관리</p></article>
+</div>
+<div class="goal-review"><b>확장 기능 검토</b><span>Gateway·내부 서버 설치·설정 자동화</span><span>요청량 기반 탐지·제한</span></div>
+<aside>현재는 VPN, 접근 정책, 차단 로그, DB 저장과 기본 백업을 개별 기능으로 구현했습니다. 이 페이지는 완성 목표를 설명합니다. 공개 키는 VPN 상대가 키를 가졌는지 확인하지만 실제 사용자 신원 확인은 별도 등록·인증 절차가 필요합니다. 환경 구성 자동화와 요청량 기반 방어는 적용 범위와 기준을 검토하고 있습니다.</aside></section>
+<section class="slide architecture-slide" data-title="시스템 구성과 동작 흐름"><header><span class="eyebrow">03 / TARGET ARCHITECTURE</span><h2>시스템 구성과 동작 흐름</h2><p class="subtitle">최종 목표 구조 · 관리 기능은 개발 예정</p></header>
+<div class="management"><b>통합 관리 프로그램</b><span>클라이언트·정책 관리 / 상태·통계·백업 조회</span><small>설치·설정 자동화: 검토 중</small></div><div class="control-link">설정 적용 · 운영 상태 조회<span>↓</span></div>
+<div class="network"><div class="node"><small>CLIENT</small><h3>사용자 PC</h3><p>WireGuard 클라이언트</p><code>10.40.0.2</code></div><div class="arrow"><span>암호화 터널</span><b>→</b></div><div class="node gateway"><small>GATEWAY</small><h3>WG-Gateway</h3><p>VPN 복호화 · nftables 정책</p><code>10.40.0.1 / 10.30.0.1</code></div><div class="arrow"><span>허용 요청</span><b>→</b></div><div class="node"><small>INTERNAL</small><h3>내부 서버</h3><p>Nginx 웹 서비스</p><code>10.30.0.10 : 80</code></div></div>
+<div class="logging"><b>차단 시 기록</b><span>Gateway의 nftables → rsyslog → Python → SQLite → 통계·백업</span></div>
+<div class="gateway-details"><h3>WG-Gateway 안에서는</h3><div class="gateway-steps">
+<article><span>01 / VPN 수신</span><p><b>UDP 51820</b>으로 도착한 통신을 WireGuard가 등록된 상대와 확인하고 복호화</p></article>
+<article><span>02 / 접근 정책</span><p>nftables가 <b>10.40.0.2 → 10.30.0.10, TCP 80</b>인지 검사해 허용 또는 차단</p></article>
+<article><span>03 / 결과 처리</span><p><b>허용:</b> 내부 서버로 전달·응답 반환<br><b>차단:</b> WG-DROP 기록 남김</p></article>
+</div><p class="gateway-detail-note">패킷의 통과 여부는 Gateway의 WireGuard·nftables가 결정합니다. Python·SQLite는 남은 로그를 저장하고 조회합니다.</p></div>
+<p class="footnote">주소는 현재 실습 예시입니다. 암호화 구간은 PC↔Gateway입니다. 로그 속도 제한으로 모든 차단 패킷이 기록되지는 않습니다.</p>
+<aside>윗부분은 개발 예정인 관리 기능이며 일반 사용자 트래픽이 통과하는 장비가 아닙니다. 현재 기반에서는 Windows PC가 Gateway의 UDP 51820으로 암호화된 통신을 보냅니다. WireGuard가 등록된 상대와 통신을 확인한 뒤 복호화하고, nftables가 내부 웹 TCP 80 허용 여부를 판단합니다. 허용된 요청은 내부 서버로 전달되며 응답은 Gateway와 VPN 터널을 거쳐 PC로 돌아옵니다. 차단된 요청은 WG-DROP으로 기록될 수 있고 rsyslog·Python·SQLite가 그 기록을 관리합니다. 로그 속도 제한 때문에 모든 차단 패킷이 남는 것은 아닙니다. Python 프로그램이 각 웹 요청을 실시간으로 승인하는 구조는 아닙니다.</aside></section>
+<section class="slide" data-title="개발 진행 현황"><header><span class="eyebrow">04 / IMPLEMENTATION STATUS</span><h2>개발 진행 현황</h2><p class="subtitle">기능별 개발 흐름 · 3~7주차 작업을 기준으로 표시</p></header>
+<div class="progress-summary"><div><strong>5 / 7</strong><span>기반 작업 단계 구현</span></div><div class="progress-track" role="img" aria-label="일곱 작업 단계 중 다섯 단계의 기반 기능 구현"><span></span></div><small>작업 단계 기준이며 전체 기능 완성률은 아닙니다.</small></div>
+<div class="progress-layout"><ol class="development-path">
+<li class="done"><span class="path-node">1</span><div><b>실습 환경·VPN 연결 <small>3~4주차</small></b><p>두 서버와 내부망 구성 · Windows에서 VPN으로 웹 응답 확인</p></div><em>구현</em></li>
+<li class="done"><span class="path-node">2</span><div><b>서비스 접근 정책 <small>4주차</small></b><p>내부 웹 TCP 80 허용 · 그 외 전달 요청 차단</p></div><em>구현</em></li>
+<li class="done"><span class="path-node">3</span><div><b>차단 로그·Python 처리 <small>5주차</small></b><p>WG-DROP 로그 분리 · 필요한 필드를 JSON으로 변환</p></div><em>구현</em></li>
+<li class="done"><span class="path-node">4</span><div><b>DB 저장·통계 <small>6~7주차</small></b><p>SQLite 저장 · 원문 중복 제외 · 프로토콜·포트별 조회</p></div><em>구현</em></li>
+<li class="done basic"><span class="path-node">5</span><div><b>주기 저장·백업 <small>6~7주차</small></b><p>자동 저장·수동 백업 검증 · 일일 예약 등록 확인</p></div><em>기본 구현</em></li>
+<li class="next"><span class="path-node">6</span><div><b>통합 관리·사용자 등록</b><p>관리 화면 · 공개 키와 VPN 주소 연결 · 정책 변경</p></div><em>예정</em></li>
+<li class="next"><span class="path-node">7</span><div><b>운영 보완·최종 검증</b><p>로그 회전·백업 복원·설치 절차 및 부하 시험</p></div><em>예정</em></li>
+</ol><div class="progress-evidence"><figure><button class="image-button" data-image="assets/vpn.png" data-caption="WireGuard 설정 및 이전 통신 기록"><img src="assets/vpn.png" alt="Windows WireGuard 활성화와 VPN 주소 10.40.0.2 및 송수신 기록"></button><figcaption><b>VPN 연결</b><span>클라이언트 주소와 이전 통신 기록</span></figcaption></figure><figure><button class="image-button" data-image="assets/web.png" data-caption="Windows에서 내부 웹 서버에 요청한 HTML 응답"><img src="assets/web.png" alt="curl.exe로 10.30.0.10에 요청해 Internal Server HTML을 받은 결과"></button><figcaption><b>내부 웹 응답</b><span>Windows에서 10.30.0.10의 HTML 수신</span></figcaption></figure></div></div>
+<aside>1~5단계는 기반 기능을 구현한 단계입니다. 다섯 번째의 일일 백업은 타이머 등록까지 확인했고 실제 예약 실행과 복원은 앞으로 검증해야 합니다. 6~7단계는 통합과 운영 보완이 남았습니다. 자동화와 요청량 기반 방어는 별도 확장 검토 항목입니다. WireGuard 사진의 핸드셰이크는 이전 통신 기록이며 현재 연결을 단독으로 증명하지 않습니다.</aside></section>
+<section class="slide" data-title="접근제어와 차단 기록 수집"><header><span class="eyebrow">04 / IMPLEMENTED <em>4~5주차</em></span><h2>접근제어와 차단 기록 수집</h2><p class="subtitle">기본은 차단하고, 정해진 VPN 클라이언트의 내부 웹 접속만 허용</p></header>
+<div class="policy-layout"><article><h3>Gateway의 전달 규칙</h3><table class="policy-table"><thead><tr><th>순서</th><th>확인하는 조건</th><th>결과</th></tr></thead><tbody>
+<tr><td>기본</td><td>전달되는 패킷 전체</td><td><b>차단</b></td></tr>
+<tr><td>1</td><td>이미 허용된 연결의 응답·관련 패킷</td><td><b>허용</b></td></tr>
+<tr><td>2</td><td><code>wg0 → ens34</code><br><code>10.40.0.2 → 10.30.0.10</code><br>새 TCP 연결 · 목적지 포트 <code>80</code></td><td><b>허용</b></td></tr>
+<tr><td>3</td><td>위 조건에 맞지 않는 전달 요청</td><td><b>차단</b><br>속도 제한 안에서 기록</td></tr>
+</tbody></table></article>
+<article class="policy-logging"><h3>WG-DROP은 어디서 붙을까?</h3>
+<p>허용 규칙 아래의 <code>log prefix "WG-DROP: "</code>이 차단 로그에 이름을 붙입니다. 뒤의 <code>drop</code>은 패킷을 차단합니다.</p>
+<p><code>limit rate 5/second burst 10 packets</code>는 기록이 너무 많이 쌓이지 않도록 <b>로그 속도</b>를 조절합니다.</p>
+<div class="policy-log-route">WG-DROP 로그 → rsyslog → <code>/var/log/wireguard-access.log</code></div></article></div>
+<figure class="rule-figure"><button class="image-button" data-image="assets/nft-forward.png" data-caption="WG-Gateway에서 확인한 nftables forward 체인 전체 규칙"><img src="assets/nft-forward.png" alt="forward 체인의 기본 차단, 기존 연결 허용, 내부 웹 TCP 80 허용, WG-DROP 로그와 차단 규칙"></button><figcaption><b>Gateway에서 확인한 실제 forward 규칙</b><span>마지막 줄: <code>log prefix "WG-DROP: " drop</code> · 클릭하면 원본 확대</span></figcaption></figure>
+<p class="footnote">규칙 순서가 중요합니다. 로그 속도 제한을 넘는 패킷도 기본 정책으로 차단되지만 로그는 남지 않을 수 있습니다.</p>
+<aside>nftables의 forward 체인에 기본 차단 정책을 두었습니다. 첫 번째 허용 규칙은 이미 허용된 연결의 응답·관련 패킷을 통과시킵니다. 두 번째 허용 규칙은 wg0에서 ens34로 가는 10.40.0.2의 10.30.0.10 TCP 80 새 연결만 통과시킵니다. 나머지는 WG-DROP 표시를 붙여 기록하고 차단하는 규칙을 만납니다. 이때 limit rate 5/second burst 10 packets는 기록 속도를 조절하는 부분이며, 제한 초과 패킷도 기본 drop 정책으로 차단됩니다. counter는 규칙에 맞은 패킷 수를 셉니다. rsyslog가 WG-DROP 기록을 전용 파일로 분리합니다. 아래 사진은 Gateway에서 출력한 실제 forward 체인입니다. 화면의 packets·bytes 숫자는 촬영 당시의 누적값이며 고정 설정값이 아닙니다.</aside></section>
+<section class="slide" data-title="로그 분석과 데이터베이스 관리"><header><span class="eyebrow">04 / IMPLEMENTED <em>5~7주차</em></span><h2>로그 분석과 데이터베이스 관리</h2><p class="subtitle">로그의 필드 추출부터 저장·중복 제외·통계 조회까지</p></header>
+<div class="process"><span>로그 한 줄</span><b>→</b><span>Python 필드 추출</span><b>→</b><span>SQLite 저장</span><b>→</b><span>통계 조회</span></div>
+<div class="two data"><article><h3>원문 해시로 중복 저장 방지</h3><table><thead><tr><th>실행</th><th>새 저장</th><th>중복 제외</th></tr></thead><tbody><tr><td>첫 실행</td><td>24건</td><td>0건</td></tr><tr><td>같은 로그 재실행</td><td>0건</td><td>24건</td></tr></tbody></table><p class="small">동일 원문은 추가하지 않고,<br>새 로그만 DB에 저장합니다.</p></article>
+<article><h3>프로토콜·포트별 집계</h3><table><thead><tr><th>프로토콜</th><th>목적지 포트</th><th>기록</th></tr></thead><tbody><tr><td>UDP</td><td>137</td><td>30건</td></tr><tr><td>TCP</td><td>22</td><td>25건</td></tr><tr><td>ICMP</td><td>없음</td><td>5건</td></tr><tr class="total"><td colspan="2">실습 시점 합계</td><td>60건</td></tr></tbody></table></article></div>
+<p class="footnote">패킷 원본이 아닌 차단 로그를 저장합니다. 저장 건수는 접속 횟수·전체 차단 패킷 수와 다릅니다.</p>
+<aside>5주차의 JSON 출력 기능을 6·7주차에 DB 저장으로 확장했습니다. 원문 SHA-256 해시와 UNIQUE 제약으로 중복을 제외합니다. 원문이 완전히 같은 별도 사건은 한 건으로 합쳐질 수 있습니다. 60건은 실습 당시 통계이며 실시간 데이터가 아닙니다.</aside></section>
+<section class="slide" data-title="자동 저장과 백업 운영"><header><span class="eyebrow">04 / IMPLEMENTED <em>6~7주차</em></span><h2>자동 저장과 백업 운영</h2></header>
+<div class="two ops"><article><div class="big-stat">약 1분<span>저장 실행 간격</span></div><h3>주기적 저장</h3><p>systemd 타이머가 저장 서비스를 실행<br>전용 계정 <code>wgmonitor</code> 사용</p><div class="mini-flow">timer → service → store_events.py</div></article><article><h3>DB 검사와 백업</h3><p>SQLite 백업 기능으로 사본 생성<br>내부 구조 검사 <code>ok</code> 확인</p><div class="mini-flow">backup_db.py → 백업 DB → 검사·조회</div></article></div>
+<div class="verification"><span><b>검증 완료</b> 재부팅 후 자동 저장 재개·기록 유지</span><span><b>등록 확인</b> 일일 백업 타이머의 다음 실행 시각</span></div>
+<p class="footnote">일일 예약의 실제 발동 결과는 추가 확인 필요. 현재 백업은 같은 VM 내부에 보관합니다.</p><aside>저장은 작업 후 종료하는 oneshot 서비스입니다. 타이머가 반복 실행하므로 계속 실행 중일 필요는 없습니다. 재부팅 후에도 기존 기록이 유지됐고 저장이 재개됐습니다. 백업 프로그램과 서비스는 성공했지만 일일 예약 발동 성공까지 확인한 것은 아닙니다.</aside></section>
+<section class="slide" data-title="남은 개발 영역"><header><span class="eyebrow">05 / NEXT STEPS</span><h2>남은 개발 영역</h2></header>
+<div class="two remaining"><article><span class="step">01</span><h3>관리 기능 통합</h3><p>관리 화면 · 클라이언트 등록·해제<br>접근 정책 변경 · 주소 할당 이력</p></article><article><span class="step">02</span><h3>데이터 운영 보완</h3><p>로그 회전 처리 · 백업 보관 기간<br>외부 백업 · 실제 복원 검증</p></article><article><span class="label">확장 검토</span><h3>설치·설정 자동화</h3><p>역할별 설정 적용과 검증<br>실패 원인 안내 · 재개·복구</p></article><article><span class="label">확장 검토</span><h3>요청량 기반 방어</h3><p>요청량의 측정 단위·제한 기준<br>오탐과 정상 사용자 영향</p></article></div>
+<p class="takeaway">개별 기능을 통합하고, 자동화와 방어 기능의 적용 범위를 구체화합니다.</p><aside>관리 화면과 주소 할당 이력은 앞으로 개발합니다. 자동화와 요청량 기반 방어는 기술적 타당성과 적용 범위를 검토하고 있습니다. 현재의 로그 속도 제한은 웹 요청량 제한 기능이 아닙니다.</aside></section>
+<section class="slide" data-title="최종 테스트 방법"><header><span class="eyebrow">05 / VALIDATION PLAN</span><h2>최종 테스트 방법</h2><p class="subtitle">실제 사용 순서대로 시험하고, 예상한 결과가 나오는지 확인합니다.</p></header>
+<ol class="validation-flow">
+<li><span class="validation-number">01</span><h3>VPN 접속</h3><p>등록된 PC와 미등록 기기로 각각 연결 시도</p><strong>등록된 PC만 접속</strong></li>
+<li><span class="validation-number">02</span><h3>서비스 접근</h3><p>내부 웹 접속 후 SSH·Ping도 시도</p><strong>웹은 허용, 나머지는 차단</strong></li>
+<li><span class="validation-number">03</span><h3>기록 확인</h3><p>차단 로그를 DB에 저장하고 다시 처리</p><strong>새 기록만 추가, 중복은 제외</strong></li>
+<li><span class="validation-number">04</span><h3>재부팅·복구</h3><p>Gateway를 다시 켜고 백업본도 복원</p><strong>설정과 기록이 유지·복구</strong></li>
+<li><span class="validation-number">05</span><h3>관리 기능 <small>구현 후</small></h3><p>클라이언트·권한을 바꾸고 설정 결과 확인</p><strong>변경 내용이 실제로 적용</strong></li>
+<li><span class="validation-number">06</span><h3>통제된 부하 <small>격리 VM</small></h3><p>웹 요청을 조금씩 늘려 응답 상태 비교</p><strong>정상 접속 유지·과도한 요청 제한*</strong></li>
+</ol>
+<p class="validation-note">* 요청량 제한을 도입한 경우에만 제한 효과를 시험합니다. 설치 자동화를 도입하면 새 설치·재실행·실패 후 재개도 확인합니다.</p>
+<p class="closing">연결부터 복구까지 확인한 뒤,<br><strong>허용된 사용자의 과도한 요청에도 대응할 수 있는지 검증하겠습니다.</strong></p>
+<aside>1. 등록된 WireGuard 클라이언트는 연결되고 미등록 키는 연결되지 않는지 봅니다. 2. 현재 정책에서는 내부 웹 TCP 80만 허용하며 SSH와 ICMP는 차단됩니다. 3. WG-DROP 로그가 SQLite에 저장되고, 같은 원문을 다시 처리해도 중복 저장되지 않는지 봅니다. 로그 속도 제한으로 모든 차단 패킷이 기록되는 것은 아닙니다. 4. 재부팅 후 서비스와 자동 저장이 살아나는지, 백업본을 별도 시험용 DB로 복원해 읽을 수 있는지 봅니다. 실제 일일 예약 백업 실행과 복원은 아직 검증하지 않았습니다. 5. 관리 프로그램을 구현하면 클라이언트 등록·해제와 정책 변경이 실제 설정에 반영되는지 봅니다. 자동 설치 기능을 도입하면 재실행 시 키와 DB 보존, 실패 후 재개를 확인합니다. 6. 소유한 격리 VM에서 요청 속도·실행 시간·중지 조건을 미리 정하고 웹 응답·서버 부하를 비교합니다. 요청량 제한 기능을 도입한 경우에만 제한 시점과 정상 사용자 영향을 측정합니다. 한 PC의 시험은 분산 공격 검증이 아닙니다. 1분 주기 DB 저장 시각을 차단 시각으로 사용하지 않습니다.</aside></section>
+<section class="slide cover thanks" data-title="감사합니다"><h1>감사합니다</h1><aside>발표를 마칩니다.</aside></section>
+</main>
+<nav class="controls" aria-label="발표 조작"><button id="prev" aria-label="이전 페이지">←</button><button id="index" title="목차 · G">목차</button><span id="page" aria-live="polite"></span><button id="notes" title="참고 설명 · N">설명</button><button id="full" title="전체 화면 · F">전체 화면</button><button id="next" aria-label="다음 페이지">→</button></nav><div class="progress" aria-hidden="true"><span id="progress"></span></div>
+<dialog id="overview"><header><h2>페이지 선택</h2><button class="close" aria-label="닫기">×</button></header><div id="page-list"></div></dialog>
+<dialog id="note-dialog"><header><h2>발표 참고 설명</h2><button class="close" aria-label="닫기">×</button></header><p id="note-content"></p></dialog>
+<dialog id="image-dialog"><header><h2 id="image-caption"></h2><button class="close" aria-label="닫기">×</button></header><div class="image-scroll"><img id="zoom-image" alt=""></div><p>원본 크기입니다. 가로로 긴 이미지는 스크롤해 확인하세요.</p></dialog>
+<div id="toast" role="status"></div><script src="app.js"></script></body></html>
